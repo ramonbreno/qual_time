@@ -1,4 +1,4 @@
-package com.example.qual_time
+package com.ramon.next_team
 
 import io.flutter.embedding.android.FlutterActivity
 

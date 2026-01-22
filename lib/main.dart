@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Qual Time?',
+      title: 'Next Team',
       debugShowCheckedModeBanner: false,
       initialRoute: Routes.home,
       getPages: AppPages.pages,
