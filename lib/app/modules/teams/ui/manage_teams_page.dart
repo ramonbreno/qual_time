@@ -64,6 +64,11 @@ class ManageTeamsPage extends GetView<ManageTeamsViewModel> {
                             playerCount: team.players.length,
                             onTap: () => _showTeamPlayers(team),
                             onDelete: () => controller.removeTeam(team),
+                            onEdit:
+                                () => Get.toNamed(
+                                  Routes.addTeam,
+                                  arguments: team,
+                                ),
                           ),
                         );
                       },

@@ -19,4 +19,11 @@ class ManageTeamsViewModel extends GetxController {
   void removeTeam(Team team) {
     teams.remove(team);
   }
+
+  void updateTeam(Team updatedTeam) {
+    final index = teams.indexWhere((t) => t.id == updatedTeam.id);
+    if (index != -1) {
+      teams[index] = updatedTeam;
+    }
+  }
 }

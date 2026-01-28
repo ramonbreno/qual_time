@@ -11,6 +11,7 @@ class AddTeamPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(AddTeamViewModel());
+    final isEditing = controller.editingTeam != null;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -22,7 +23,7 @@ class AddTeamPage extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          'Adicionar Novo Time',
+          isEditing ? 'Editar Time' : 'Adicionar Novo Time',
           style: GoogleFonts.inter(
             fontWeight: FontWeight.bold,
             color: Colors.black,
@@ -184,7 +185,10 @@ class AddTeamPage extends StatelessWidget {
             const SizedBox(height: 40),
 
             // Save Button
-            PrimaryButton(label: 'Salvar Time', onTap: controller.saveTeam),
+            PrimaryButton(
+              label: isEditing ? 'Atualizar' : 'Salvar',
+              onTap: controller.saveTeam,
+            ),
             const SizedBox(height: 20),
           ],
         ),

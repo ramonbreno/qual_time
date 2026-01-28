@@ -6,6 +6,7 @@ class TeamManagementCard extends StatelessWidget {
   final int playerCount;
   final VoidCallback? onTap;
   final VoidCallback? onDelete;
+  final VoidCallback? onEdit;
 
   const TeamManagementCard({
     super.key,
@@ -13,6 +14,7 @@ class TeamManagementCard extends StatelessWidget {
     required this.playerCount,
     this.onTap,
     this.onDelete,
+    this.onEdit,
   });
 
   @override
@@ -36,15 +38,18 @@ class TeamManagementCard extends StatelessWidget {
         child: Row(
           children: [
             // Left Edit Icon
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: Colors.blue.shade100.withValues(alpha: 0.5),
-                shape: BoxShape.circle,
-              ),
-              child: const Center(
-                child: Icon(Icons.edit, color: Colors.blue, size: 20),
+            GestureDetector(
+              onTap: onEdit,
+              child: Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade100.withValues(alpha: 0.5),
+                  shape: BoxShape.circle,
+                ),
+                child: const Center(
+                  child: Icon(Icons.edit, color: Colors.blue, size: 20),
+                ),
               ),
             ),
             const SizedBox(width: 16),

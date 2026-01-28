@@ -11,6 +11,17 @@ class AddTeamViewModel extends GetxController {
 
   // Reactive list of players
   final RxList<String> players = <String>[].obs;
+  Team? editingTeam;
+
+  @override
+  void onInit() {
+    super.onInit();
+    if (Get.arguments is Team) {
+      editingTeam = Get.arguments as Team;
+      teamNameController.text = editingTeam!.name;
+      players.assignAll(editingTeam!.players);
+    }
+  }
 
   void addPlayer() {
     final name = playerInputController.text.trim();
@@ -46,13 +57,20 @@ class AddTeamViewModel extends GetxController {
       return;
     }
 
-    final newTeam = Team(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      name: name,
-      players: List.from(players),
-    );
-
-    _manageTeamsViewModel.addNewTeam(newTeam);
+    if (editingTeam != null) {
+      final updatedTeam = editingTeam!.copyWith(
+        name: name,
+        players: List.from(players),
+      );
+      _manageTeamsViewModel.updateTeam(updatedTeam);
+    } else {
+      final newTeam = Team(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        name: name,
+        players: List.from(players),
+      );
+      _manageTeamsViewModel.addNewTeam(newTeam);
+    }
     Get.back();
   }
 
