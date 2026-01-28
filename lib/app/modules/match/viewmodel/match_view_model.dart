@@ -51,6 +51,19 @@ class MatchViewModel extends GetxController {
     );
   }
 
+  void swapTeams() {
+    if (_state.value == null) return;
+    final currentState = _state.value!;
+    final currentMatch = currentState.currentMatch;
+
+    final newMatch = MatchPair(
+      left: currentMatch.right,
+      right: currentMatch.left,
+    );
+
+    _state.value = currentState.copyWith(currentMatch: newMatch);
+  }
+
   void resetMatch() {
     _state.value = null;
   }

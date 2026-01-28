@@ -111,7 +111,6 @@ class MatchPage extends GetView<MatchViewModel> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 16,
                 children: [
                   Expanded(
                     child: Column(
@@ -146,6 +145,17 @@ class MatchPage extends GetView<MatchViewModel> {
                           onTap: () => _showConfirmVictory(currentMatch.left),
                         ),
                       ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 50),
+                    child: IconButton(
+                      onPressed: controller.swapTeams,
+                      icon: const Icon(
+                        Icons.swap_horiz_rounded,
+                        color: Colors.grey,
+                        size: 32,
+                      ),
                     ),
                   ),
                   Expanded(
