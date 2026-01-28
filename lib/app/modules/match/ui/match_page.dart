@@ -11,6 +11,7 @@ import 'package:qual_time/app/modules/match/ui/components/empty_match_state.dart
 import 'package:qual_time/app/modules/match/viewmodel/match_view_model.dart';
 import 'package:qual_time/app/routes/app_routes.dart';
 import 'package:qual_time/app/shared/ui/bottom_sheets/team_players_bottom_sheet.dart';
+import 'package:qual_time/app/modules/match/ui/bottom_sheets/confirm_victory_bottom_sheet.dart';
 
 class MatchPage extends GetView<MatchViewModel> {
   const MatchPage({super.key});
@@ -18,6 +19,19 @@ class MatchPage extends GetView<MatchViewModel> {
   void _showTeamPlayers(Team team) {
     Get.bottomSheet(
       TeamPlayersBottomSheet(team: team),
+      isScrollControlled: true,
+    );
+  }
+
+  void _showConfirmVictory(Team team) {
+    Get.bottomSheet(
+      ConfirmVictoryBottomSheet(
+        team: team,
+        onConfirm: () {
+          controller.onTeamWon(team.id);
+          Get.back();
+        },
+      ),
       isScrollControlled: true,
     );
   }
@@ -128,9 +142,8 @@ class MatchPage extends GetView<MatchViewModel> {
                         ),
                         const SizedBox(height: 24),
                         PrimaryButton(
-                          label: 'Venceu',
-                          onTap:
-                              () => controller.onTeamWon(currentMatch.left.id),
+                          label: 'VENCEU',
+                          onTap: () => _showConfirmVictory(currentMatch.left),
                         ),
                       ],
                     ),
@@ -164,9 +177,8 @@ class MatchPage extends GetView<MatchViewModel> {
                         ),
                         const SizedBox(height: 24),
                         PrimaryButton(
-                          label: 'Venceu',
-                          onTap:
-                              () => controller.onTeamWon(currentMatch.right.id),
+                          label: 'VENCEU',
+                          onTap: () => _showConfirmVictory(currentMatch.right),
                         ),
                       ],
                     ),
