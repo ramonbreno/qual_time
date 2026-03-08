@@ -18,6 +18,41 @@ class ManageTeamsPage extends GetView<ManageTeamsViewModel> {
     );
   }
 
+  void _showImportDialog(BuildContext context) {
+    final textController = TextEditingController();
+    Get.dialog(
+      AlertDialog(
+        title: Text(
+          'Importar do WhatsApp',
+          style: GoogleFonts.inter(fontWeight: FontWeight.bold),
+        ),
+        content: TextField(
+          controller: textController,
+          maxLines: 10,
+          decoration: const InputDecoration(
+            hintText: 'Cole o texto do WhatsApp aqui...',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (textController.text.trim().isNotEmpty) {
+                controller.importFromWhatsApp(textController.text);
+              }
+              Get.back();
+            },
+            child: const Text('Importar'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,6 +68,12 @@ class ManageTeamsPage extends GetView<ManageTeamsViewModel> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.paste_rounded, color: Colors.black),
+            onPressed: () => _showImportDialog(context),
+          ),
+        ],
       ),
       body: Stack(
         children: [
