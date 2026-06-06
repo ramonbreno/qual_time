@@ -1,12 +1,21 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:qual_time/app/core/models/game_engine.dart';
+import 'package:qual_time/app/core/services/local_storage_service_interface.dart';
 import 'package:qual_time/app/modules/match/domain/models/match_pair.dart';
 import 'package:qual_time/app/modules/match/domain/models/match_state.dart';
 import 'package:qual_time/app/modules/match/domain/models/team.dart';
 import 'package:qual_time/app/modules/teams/viewmodel/manage_teams_view_model.dart';
 
 class MatchViewModel extends GetxController {
+  static const _currentMatchStorageKey = 'current_match_state';
+
   final ManageTeamsViewModel _manageTeamsViewModel = Get.find();
+  final ILocalStorageService? _localStorageService =
+      Get.isRegistered<ILocalStorageService>()
+          ? Get.find<ILocalStorageService>()
+          : null;
 
   final _state = Rxn<MatchState>();
 
@@ -29,6 +38,15 @@ class MatchViewModel extends GetxController {
             ...(state?.restingTeam == null ? [] : [state!.restingTeam!]),
             ...state!.queue,
           ];
+
+  @override
+  void onInit() {
+    super.onInit();
+    unawaited(_loadPersistedState());
+    ever<MatchState?>(_state, (state) {
+      unawaited(_persistState(state));
+    });
+  }
 
   void startMatch() {
     final List<Team> queue = List.from(_manageTeamsViewModel.teams);
@@ -66,5 +84,22 @@ class MatchViewModel extends GetxController {
 
   void resetMatch() {
     _state.value = null;
+  }
+
+  Future<void> _loadPersistedState() async {
+    final persistedState = await _localStorageService?.get(
+      _currentMatchStorageKey,
+    );
+
+    if (persistedState == null || persistedState.isEmpty) return;
+
+    _state.value = MatchState.fromMap(persistedState);
+  }
+
+  Future<void> _persistState(MatchState? state) async {
+    await _localStorageService?.set(
+      _currentMatchStorageKey,
+      state?.toMap() ?? <String, dynamic>{},
+    );
   }
 }

@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:qual_time/app/core/services/local_storage_service_interface.dart';
+import 'package:qual_time/app/core/services/shared_preferences_local_storage_service.dart';
 import 'package:qual_time/app/routes/app_pages.dart';
 import 'package:qual_time/app/routes/app_routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final preferences = await SharedPreferences.getInstance();
+  Get.put<ILocalStorageService>(
+    LocalStorageService(preferences),
+    permanent: true,
+  );
+
   runApp(const MyApp());
 }
 

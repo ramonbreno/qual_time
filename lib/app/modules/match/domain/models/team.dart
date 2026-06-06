@@ -16,6 +16,17 @@ class Team {
     this.players = const [],
   });
 
+  factory Team.fromMap(Map<String, dynamic> map) {
+    return Team(
+      id: map['id'] as String,
+      name: map['name'] as String,
+      wins: map['wins'] as int? ?? 0,
+      losses: map['losses'] as int? ?? 0,
+      consecutiveWins: map['consecutiveWins'] as int?,
+      players: List<String>.from(map['players'] as List? ?? const []),
+    );
+  }
+
   Team copyWith({
     String? id,
     String? name,
@@ -32,5 +43,16 @@ class Team {
       consecutiveWins: consecutiveWins ?? this.consecutiveWins,
       players: players ?? this.players,
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'wins': wins,
+      'losses': losses,
+      'consecutiveWins': consecutiveWins,
+      'players': players,
+    };
   }
 }
