@@ -1,8 +1,24 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
+import 'package:qual_time/app/core/services/local_storage_service_interface.dart';
 import 'package:qual_time/app/modules/match/domain/models/team.dart';
 
 class ManageTeamsViewModel extends GetxController {
+  static const _teamsStorageKey = 'teams';
+
+  final ILocalStorageService? _localStorageService =
+      Get.isRegistered<ILocalStorageService>()
+          ? Get.find<ILocalStorageService>()
+          : null;
+
   final RxList<Team> teams = <Team>[].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    unawaited(_loadPersistedTeams());
+  }
 
   void reorderTeams(int oldIndex, int newIndex) {
     if (oldIndex < newIndex) {
@@ -70,5 +86,28 @@ class ManageTeamsViewModel extends GetxController {
     }
 
     saveCurrentTeam();
+  }
+
+  Future<void> _loadPersistedTeams() async {
+    final persistedTeams = await _localStorageService?.get(_teamsStorageKey);
+
+    if (persistedTeams != null && persistedTeams.isNotEmpty) {
+      final storedTeams = persistedTeams['teams'] as List? ?? const [];
+      teams.assignAll(
+        storedTeams.map(
+          (team) => Team.fromMap(Map<String, dynamic>.from(team as Map)),
+        ),
+      );
+    }
+
+    ever<List<Team>>(teams, (teams) {
+      unawaited(_persistTeams(teams));
+    });
+  }
+
+  Future<void> _persistTeams(List<Team> teams) async {
+    await _localStorageService?.set(_teamsStorageKey, {
+      'teams': teams.map((team) => team.toMap()).toList(),
+    });
   }
 }
