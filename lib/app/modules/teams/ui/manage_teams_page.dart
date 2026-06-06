@@ -70,7 +70,7 @@ class ManageTeamsPage extends GetView<ManageTeamsViewModel> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.paste_rounded, color: Colors.black),
+            icon: const Icon(Icons.download_rounded, color: Colors.blueGrey),
             onPressed: () => _showImportDialog(context),
           ),
         ],
