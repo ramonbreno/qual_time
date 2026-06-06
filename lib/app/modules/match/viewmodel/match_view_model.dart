@@ -43,6 +43,7 @@ class MatchViewModel extends GetxController {
   void onInit() {
     super.onInit();
     unawaited(_loadPersistedState());
+    ever<List<Team>>(_manageTeamsViewModel.teams, _syncManagedTeamChanges);
     ever<MatchState?>(_state, (state) {
       unawaited(_persistState(state));
     });
@@ -101,5 +102,58 @@ class MatchViewModel extends GetxController {
       _currentMatchStorageKey,
       state?.toMap() ?? <String, dynamic>{},
     );
+  }
+
+  void _syncManagedTeamChanges(List<Team> managedTeams) {
+    final currentState = _state.value;
+
+    if (currentState == null) return;
+
+    final managedTeamsById = {for (final team in managedTeams) team.id: team};
+    var hasChanges = false;
+
+    Team syncTeam(Team team) {
+      final managedTeam = managedTeamsById[team.id];
+
+      if (managedTeam == null ||
+          (managedTeam.name == team.name &&
+              _haveSamePlayers(managedTeam.players, team.players))) {
+        return team;
+      }
+
+      hasChanges = true;
+      return team.copyWith(
+        name: managedTeam.name,
+        players: List.from(managedTeam.players),
+      );
+    }
+
+    final syncedCurrentMatch = MatchPair(
+      left: syncTeam(currentState.currentMatch.left),
+      right: syncTeam(currentState.currentMatch.right),
+    );
+    final syncedQueue = currentState.queue.map(syncTeam).toList();
+    final syncedRestingTeam =
+        currentState.restingTeam == null
+            ? null
+            : syncTeam(currentState.restingTeam!);
+
+    if (!hasChanges) return;
+
+    _state.value = MatchState(
+      currentMatch: syncedCurrentMatch,
+      queue: syncedQueue,
+      restingTeam: syncedRestingTeam,
+    );
+  }
+
+  bool _haveSamePlayers(List<String> currentPlayers, List<String> newPlayers) {
+    if (currentPlayers.length != newPlayers.length) return false;
+
+    for (var index = 0; index < currentPlayers.length; index++) {
+      if (currentPlayers[index] != newPlayers[index]) return false;
+    }
+
+    return true;
   }
 }
